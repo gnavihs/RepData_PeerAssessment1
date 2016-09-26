@@ -22,7 +22,7 @@ By plotting histogram I find out the frequency of 'total steps taken each day'.
 ```r
 library(plyr)
 TotalSteps <- ddply(data, .(date), function(x) sum(x[, "steps"], na.rm = TRUE))
-hist(TotalSteps$V1, xlab = "Steps", ylab = "Frequency", main = "Histogram of total steps taken each day")
+hist(TotalSteps$V1, xlab = "Steps", ylab = "Frequency", main = "Histogram of total steps taken each day", breaks = 20)
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
@@ -57,12 +57,25 @@ The variables included in this dataset are:
 ```r
 ActivityPattern <- ddply(data, .(interval), function(x) mean(x[, "steps"], na.rm = TRUE))
 library(ggplot2)
+```
+
+###Plot
+
+```r
 qplot(interval, V1, data = ActivityPattern, geom = "line", xlab = "Intervals", ylab = "Steps", main = "Activity pattern of steps as per intervals")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
+###5-minute interval with maximum steps
 
+```r
+ActivityPattern[which.max(ActivityPattern$V1), "interval"]
+```
+
+```
+## [1] 835
+```
 ## Imputing missing values
 ### Number of missing values
 
@@ -98,7 +111,11 @@ dataNew$steps <- dataNew$steps + as.numeric(MissingValuesLogicalVector)*MeanStep
 
 ```r
 TotalStepsNew <- ddply(dataNew, .(date), function(x) sum(x[, "steps"], na.rm = TRUE))
+hist(TotalStepsNew$V1, xlab = "Steps", ylab = "Frequency", main = "Histogram of total steps taken each day", breaks = 20)
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+
 ###Mean and median
 As you can see because of filling NA values both mean and median increases.
 
@@ -139,6 +156,8 @@ ActivityPatternNew <- ddply(dataNew, .(interval, wDay), function(x) mean(x[, "st
 qplot(interval, V1, data = ActivityPatternNew, geom = "line", xlab = "Intervals", ylab = "Steps", facets = wDay~., main = "Activity pattern of steps as per intervals")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+
+The average activity on weekend seems to be more than average activity on weekdays. Though the peak is in weekdays which may relate to activity like going to office or jogging.
 
 #The End. Thank you!
